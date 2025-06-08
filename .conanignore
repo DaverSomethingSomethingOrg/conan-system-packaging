@@ -1,0 +1,14 @@
+LICENSE.txt
+README.md
+requirements.txt
+tests/*
+docs/*
+mkdocs.yml
+demo/*
+.devcontainer/*
+.vscode/*
+.github/*
+.gitlab-ci.yml
+.gitignore
+*.DS_Store*
+*.pytest_cache*

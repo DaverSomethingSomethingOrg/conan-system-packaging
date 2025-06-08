@@ -1,0 +1,59 @@
+site_name: "Conan System Packaging"
+copyright: Copyright © 2025, David L. Armstrong.
+repo_url: https://github.com/DaverSomethingSomethingOrg/conan-system-packaging
+#site_url: https://github.com/DaverSomethingSomethingOrg/conan-system-packaging
+#edit_uri_template: 'edit/main/docs/{path}'
+docs_dir: docs/
+
+extra:
+  version:
+    provider: mike
+
+plugins:
+#  - techdocs-core
+#   - mkdocstrings:
+#       default_handler: python
+#       handlers:
+#         python:
+#           paths: [src]
+#           options:
+# #            inherited_members: true
+#             filters:
+#               - "!^__"
+
+theme:
+  name: material
+  features:
+    - content.code.copy
+    - content.code.annotate
+    - navigation.footer
+
+markdown_extensions:
+  - toc:
+      permalink: '#'
+      toc_depth: 4
+  - attr_list
+  - def_list
+  - tables
+  - admonition
+  - pymdownx.magiclink
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+      linenums: false
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - callouts
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+watch:
+  - docs/
+
+nav:
+  - Introduction:  'README.md'
+  - Apache License v2.0: 'LICENSE.txt'
