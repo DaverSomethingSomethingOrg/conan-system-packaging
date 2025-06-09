@@ -158,7 +158,9 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
 
         rpmbuild_cmd.extend(['--define', rpm_tool_dependencies_arg])
 
-    rpmbuild_cmd.append('generic-v1.0.0.spec')
+    # Use the RPM spec template provided with the extension
+    spec_template_path = os.path.join(os.path.dirname(__file__), 'rpm_deployer', 'generic-v1.0.0.spec')
+    rpmbuild_cmd.append(spec_template_path)
 
     conanfile.output.info('Executing rpmbuild: ' + str(rpmbuild_cmd))
     subprocess.run(rpmbuild_cmd)

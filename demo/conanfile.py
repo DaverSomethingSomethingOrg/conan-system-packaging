@@ -19,7 +19,7 @@ class Toolchain(ConanFile):
 
 #        self.requires("autoconf/2.71")
 
-        self.requires("clang/19.1.7")
+#        self.requires("clang/19.1.7")
 #        self.requires("llvm-core/19.1.7")
         self.requires("gtest/1.16.0")
 #        self.requires("cppunit/1.15.1")

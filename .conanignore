@@ -10,5 +10,6 @@ demo/*
 .github/*
 .gitlab-ci.yml
 .gitignore
+.gitmodules
 *.DS_Store*
 *.pytest_cache*

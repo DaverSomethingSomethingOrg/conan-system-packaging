@@ -16,6 +16,8 @@ To install the extensions, use [`conan config install`](https://docs.conan.io/2/
 
 ```bash
 $ conan config install https://github.com/DaverSomethingSomethingOrg/conan-system-packaging.git
+Trying to clone repo: https://github.com/DaverSomethingSomethingOrg/conan-system-packaging.git
+Repo cloned!
 Copying file rpm_deployer.py to /home/conan_user/.conan2/extensions/deployers
 $ 
 ```
@@ -24,7 +26,7 @@ $
 
 Add a `install_prefix` option to your Conan profile.
 
-```none hl_lines="10-11" title="~/.conan2/profiles/optPrefix"
+```none hl_lines="10-11" title="~/.conan2/profiles/optToolchain"
 [settings]
 arch=armv8
 build_type=Release
@@ -38,7 +40,7 @@ os=Linux
 *:install_prefix=/opt/toolchain
 ```
 
-## Sample Usage:
+## Sample Usage
 
 ```bash
 $ conan install --build=missing .
@@ -49,7 +51,7 @@ $ conan install --deployer-folder=rpm_deploy \
                 .
 ```
 
-## Sample Directory Tree Output:
+## Sample Directory Tree Output
 
 ```none
 rpm_deploy
