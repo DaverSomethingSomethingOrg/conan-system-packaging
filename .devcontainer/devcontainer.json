@@ -2,8 +2,8 @@
 {
   "name": "Base OS with Python3 and Git",
 //  "build": { "dockerfile": "Dockerfile-python" },
-//  "build": { "dockerfile": "Dockerfile-ubuntu" },
-  "build": { "dockerfile": "Dockerfile-almalinux" },
+  "build": { "dockerfile": "Dockerfile-ubuntu" },
+//  "build": { "dockerfile": "Dockerfile-almalinux" },
 
 // feature support is for ubuntu/debian (uses apt-get, etc) apparently...
 /*

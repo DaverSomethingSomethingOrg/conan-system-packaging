@@ -12,19 +12,25 @@ system packages.
 
 ### Conan config install
 
-To install the extensions, use [`conan config install`](https://docs.conan.io/2/reference/commands/config.html#conan-config-install).
+To install the extensions, use [`conan config install`](https://docs.conan.io/2/reference/commands/config.html).
 
 ```bash
 $ conan config install https://github.com/DaverSomethingSomethingOrg/conan-system-packaging.git
 Trying to clone repo: https://github.com/DaverSomethingSomethingOrg/conan-system-packaging.git
 Repo cloned!
-Copying file rpm_deployer.py to /home/conan_user/.conan2/extensions/deployers
+Copying file deb_deployer.py to /root/.conan2/extensions/deployers
+Copying file rpm_deployer.py to /root/.conan2/extensions/deployers
+Copying file Makefile to /root/.conan2/extensions/deployers/deb_deployer
+Copying file rules to /root/.conan2/extensions/deployers/deb_deployer/debian
+Copying file copyright to /root/.conan2/extensions/deployers/deb_deployer/debian
+Copying file format to /root/.conan2/extensions/deployers/deb_deployer/debian/source
+Copying file template-v1.0.0.spec to /root/.conan2/extensions/deployers/rpm_deployer
 $ 
 ```
 
 ### Custom Conan profile
 
-Add a `install_prefix` option to your Conan profile.
+Add an `install_prefix` option to your Conan profile.
 
 ```none hl_lines="10-11" title="~/.conan2/profiles/optToolchain"
 [settings]
@@ -47,6 +53,11 @@ $ conan install --build=missing .
 
 $ conan install --deployer-folder=rpm_deploy \
                 --deployer=rpm_deployer \
+                --profile=optToolchain \
+                .
+
+$ conan install --deployer-folder=deb_deploy \
+                --deployer=deb_deployer \
                 --profile=optToolchain \
                 .
 ```

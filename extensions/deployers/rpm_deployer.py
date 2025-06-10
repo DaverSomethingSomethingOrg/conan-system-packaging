@@ -5,7 +5,17 @@
 # into a directory tree like the example below. Transitive
 # dependencies are included.
 #
-# See project `README.md` for installation and usage details.
+# This deployer uses the following installation structure to locate
+# the templated RPM spec file:
+#
+# <deployer install dir>
+#     ├── rpm_deployer
+#     │   └── template-v1.0.0.spec
+#     └── rpm_deployer.py
+# 
+# `conan config install <path|URL>` is recommended for installation.
+#
+# See project `README.md` for more installation and usage details.
 #
 
 from conan.tools.files import copy, mkdir
@@ -51,10 +61,10 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
     toolchain_prefix = conanfile.options.install_prefix
     package_prefix = str(toolchain_prefix).lstrip('/').replace('/', '_')
 
-    copy_pattern = None
-    copy_dst = None
-
-    dashed_rpm_toolnamever = f'{ package_prefix }-{ dependency_item.ref.name }-{ dependency_item.ref.version }'
+    # We'll name each of our toolchain packages after ourselves.
+    # We are "/opt/toolchain", so "make" gets "opt+toolchain-make" to avoid conflict with OS packages.
+    dashed_pkg_toolname = f'{ package_prefix }-{ dependency_item.ref.name }'
+    dashed_pkg_toolnamever = f'{ dashed_pkg_toolname }-{ dependency_item.ref.version }'
 
     # If dependency has a install_prefix, we'll copy the files out of that area
     # Otherwise we'll assume it's relocatable and use our toplevel prefix as an
@@ -87,10 +97,6 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
                     '--directory', output_folder,
                     os.path.join(dashed_rpm_toolnamever, neutered_prefix)
                    ])
-
-    # We'll name each of our toolchain packages after ourselves.
-    # We are "/opt/toolchain", "make" gets "opt_toolchain-make" to avoid conflict with OS packages.
-    prefixed_package_name = f'{ package_prefix }-{ dependency_item.ref.name }'
 
     # rpm spec template populated with information from conanfile
     #TODO
@@ -130,7 +136,7 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
             conanfile.output.info(f'\t{ require_line }')
 
     ######################################################################
-    # Call `rpmbuild` against our parameterized/generic RPM spec file,
+    # Call `rpmbuild` against our parameterized template RPM spec file,
     # passing any of the metadata from `conanfile.py` as necesary.
     #
     # - set QA_RPATHS - Turn off any failing RPATH checks 
@@ -142,7 +148,7 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
         'rpmbuild',
         '-bb',
         '--define', f"__brp_mangle_shebangs /bin/true",
-        '--define', f"tool_name { prefixed_package_name }",
+        '--define', f"tool_name { dashed_pkg_toolname }",
         '--define', f"tool_version { dependency_item.ref.version }",
         '--define', f"tool_description { dependency_item.description }",
         '--define', f"tool_license { dependency_item.license }",
@@ -159,7 +165,10 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
         rpmbuild_cmd.extend(['--define', rpm_tool_dependencies_arg])
 
     # Use the RPM spec template provided with the extension
-    spec_template_path = os.path.join(os.path.dirname(__file__), 'rpm_deployer', 'generic-v1.0.0.spec')
+    deployer_rootname = str(os.path.basename(__file__)).rstrip('.py')
+    deployer_support_dir = os.path.dirname(__file__)
+    spec_template_path = os.path.join(deployer_support_dir, deployer_rootname, 'template-v1.0.0.spec')
+
     rpmbuild_cmd.append(spec_template_path)
 
     conanfile.output.info('Executing rpmbuild: ' + str(rpmbuild_cmd))
