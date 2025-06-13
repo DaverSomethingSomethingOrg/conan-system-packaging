@@ -18,13 +18,13 @@ To install the extensions, use [`conan config install`](https://docs.conan.io/2/
 $ conan config install https://github.com/DaverSomethingSomethingOrg/conan-system-packaging.git
 Trying to clone repo: https://github.com/DaverSomethingSomethingOrg/conan-system-packaging.git
 Repo cloned!
-Copying file deb_deployer.py to /root/.conan2/extensions/deployers
-Copying file rpm_deployer.py to /root/.conan2/extensions/deployers
-Copying file Makefile to /root/.conan2/extensions/deployers/deb_deployer
-Copying file rules to /root/.conan2/extensions/deployers/deb_deployer/debian
-Copying file copyright to /root/.conan2/extensions/deployers/deb_deployer/debian
-Copying file format to /root/.conan2/extensions/deployers/deb_deployer/debian/source
-Copying file template-v1.0.0.spec to /root/.conan2/extensions/deployers/rpm_deployer
+Copying file deb_deployer.py to /home/conan_user/.conan2/extensions/deployers
+Copying file rpm_deployer.py to /home/conan_user/.conan2/extensions/deployers
+Copying file Makefile to /home/conan_user/.conan2/extensions/deployers/deb_deployer
+Copying file rules to /home/conan_user/.conan2/extensions/deployers/deb_deployer/debian
+Copying file copyright to /home/conan_user/.conan2/extensions/deployers/deb_deployer/debian
+Copying file format to /home/conan_user/.conan2/extensions/deployers/deb_deployer/debian/source
+Copying file template-v1.0.0.spec to /home/conan_user/.conan2/extensions/deployers/rpm_deployer
 $ 
 ```
 
@@ -32,7 +32,7 @@ $
 
 Add an `install_prefix` option to your Conan profile.
 
-```none hl_lines="10-11" title="~/.conan2/profiles/optToolchain"
+```none hl_lines="10-11" title="/home/conan_user/.conan2/profiles/optToolchain"
 [settings]
 arch=armv8
 build_type=Release
@@ -103,6 +103,8 @@ rpm_deploy/RPM_HOME
         └── opt_toolchain-zlib-1.3.1.tar.gz
 ```
 
-## LICENSE
+## License and Copyright
+
+Copyright © 2025 David L. Armstrong
 
 [Apache-2.0](LICENSE.txt)

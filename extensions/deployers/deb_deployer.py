@@ -1,6 +1,8 @@
 ######################################################################
 # deb_deployer.py
 #
+# Copyright © 2025 David L. Armstrong
+#
 # Conan Custom Deployer script that copies each dependency's files
 # into a directory tree like the example below. Transitive
 # dependencies are included.
@@ -87,7 +89,7 @@ def process_dependency(conanfile, output_folder, dependency_item):
     # NOTE: Mind the `_` in the tarball filename separating pkg name from version!
     # tar czv --exclude debian --file opt+toolchain-make_4.4.1.orig.tar.gz opt+toolchain-make-4.4.1/
 
-    # tar up the deployment copy to use as rpmbuild sources
+    # tar up the deployment copy to use as dch/debuild sources
     subprocess.run(['tar',
                     '--create',
                     '--gzip',
@@ -111,13 +113,7 @@ def process_dependency(conanfile, output_folder, dependency_item):
 
     ######################################################################
     # Gather dependency list from conanfile.py for use in control file
-    # `Requires:` list with prefixed package names...
-    #
-    # This is ugly, we assemble a multi-line string so we can pass it
-    # in to rpmbuild on the cmdline.
-    #
-    # For example:
-    #  `rpmbuild -bb --define tool_dependencies 'Requires: bash\nRequires: ssh' package.spec`
+    # `Depends:` list with prefixed package names...
     #
     pkg_dep_list = []
     for dep_name, dep_dep in dependency_item.dependencies.items():

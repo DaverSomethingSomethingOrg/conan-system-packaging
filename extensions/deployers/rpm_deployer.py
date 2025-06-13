@@ -1,6 +1,8 @@
 ######################################################################
 # rpm_deployer.py
 #
+# Copyright © 2025 David L. Armstrong
+# 
 # Conan Custom Deployer script that copies each dependency's files
 # into a directory tree like the example below. Transitive
 # dependencies are included.
