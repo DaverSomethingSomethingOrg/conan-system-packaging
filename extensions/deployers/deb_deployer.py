@@ -24,7 +24,6 @@ def deploy(graph, output_folder, **kwargs):
         process_dependency(conanfile, output_folder, dependency_item)
 
 
-# Function to ensure we capture any transitive dependencies
 def process_dependency(conanfile, output_folder, dependency_item):
 
     info_msg = 'Deployer Processing ' \
@@ -34,6 +33,7 @@ def process_dependency(conanfile, output_folder, dependency_item):
 
     conanfile.output.info(info_msg)
 
+    # We expect our toplevel conanfile to accept our `install_prefix` option
     toolchain_prefix = conanfile.options.install_prefix
 
     # https://www.debian.org/doc/debian-policy/ch-controlfields.html#source
@@ -105,11 +105,10 @@ def process_dependency(conanfile, output_folder, dependency_item):
         dirs_file.write(f'{ neutered_prefix }\n')
 
 #TODO
-    # - build # or bootstrap versioning needs to be provided or detected somehow
-    # - Summary, arch(x86_64, aarch64, noarch, etc)
-    # - author
+    # - build #/package revision or bootstrap versioning needs to be provided or detected somehow
+    # - author/Maintainer/EMAIL
     # - %changelog ???
-# ./opt+toolchain-make-4.4.1/debian/copyright
+#TODO  ./opt+toolchain-make-4.4.1/debian/copyright
 
     ######################################################################
     # Gather dependency list from conanfile.py for use in control file
@@ -122,8 +121,9 @@ def process_dependency(conanfile, output_folder, dependency_item):
         if dep_dep.package_folder is None:
             continue
 
+        # Make sure to add the '-1' package revision as well here!
         prefixed_dep_name = f'{ package_prefix }-{ dep_dep.ref.name }'
-        pkg_dep_list.append(f'{ prefixed_dep_name } (= { dep_dep.ref.version })')
+        pkg_dep_list.append(f'{ prefixed_dep_name } (= { dep_dep.ref.version }-1)')
 
     # If the conanfile specifies Apt dependencies, we should just pass them through directly
     if 'apt' in dependency_item._conanfile.system_requires:
@@ -143,6 +143,14 @@ def process_dependency(conanfile, output_folder, dependency_item):
     if pkg_dep_list:
         pkg_dependencies = ", " + ", ".join(pkg_dep_list)
 
+    # Detect the value for package Architecture
+    # TODO - support noarch pkgs
+    dpkg_arch_cmd = [ 'dpkg-architecture',
+                      '--query', 'DEB_BUILD_ARCH',
+                    ]
+    dpkg_arch_proc = subprocess.run( dpkg_arch_cmd, capture_output=True, env={'LANG': ""}, encoding='utf-8',)
+    dpkg_arch = dpkg_arch_proc.stdout.split('\n')[0]
+
     # Generate control file
     control_content = f'Source: { dashed_pkg_toolname }\n' \
                     + f'Maintainer: Not it\n' \
@@ -152,9 +160,19 @@ def process_dependency(conanfile, output_folder, dependency_item):
                     + f'Build-Depends: debhelper-compat (= 13)\n' \
                     + f'\n' \
                     + f'Package: { dashed_pkg_toolname }\n' \
-                    + f'Architecture: arm64\n' \
+                    + f'Architecture: { dpkg_arch }\n' \
                     + f'Depends: ${{shlibs:Depends}}, ${{misc:Depends}}{ pkg_dependencies }\n' \
                     + f'Description: { dependency_item.description }\n'
+
+#TODO Binary-only package?
+#    control_content = f'Package: { dashed_pkg_toolname }\n' \
+#                    + f'Version: { dependency_item.ref.version }' \
+#                    + f'Architecture: { dpkg_arch }\n' \
+#                    + f'Essential: no\n' \
+#                    + f'Priority: optional\n' \
+#                    + f'Depends: ${{shlibs:Depends}}, ${{misc:Depends}}{ pkg_dependencies }\n' \
+#                    + f'Maintainer: Not it\n' \
+#                    + f'Description: { dependency_item.description }\n'
 
     control_filename = os.path.join(pkg_root_dst, "debian", "control")
     with open(control_filename, 'w') as control_file:
@@ -176,7 +194,7 @@ def process_dependency(conanfile, output_folder, dependency_item):
                     cwd=pkg_root_dst,
                    )
 
-#TODO `dpkg-buildpackage -b`?
+#TODO `dpkg-buildpackage -b`? `dpkg-deb --build my-program_version_architecture`?`
     # Build the package
     debuild_cmd = ['debuild', '-us', '-uc']
     conanfile.output.info('Executing debuild: ' + str(debuild_cmd))

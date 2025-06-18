@@ -30,7 +30,8 @@ $
 
 ### Custom Conan profile
 
-Add an `install_prefix` option to your Conan profile.
+Add an `install_prefix` option to your Conan profile, or make sure to
+provide the option at deployer runtime.
 
 ```none hl_lines="10-11" title="/home/conan_user/.conan2/profiles/optToolchain"
 [settings]
@@ -49,8 +50,11 @@ os=Linux
 ## Sample Usage
 
 ```bash
+
+# Make sure the full toolchain is built and loaded into our cache.
 $ conan install --build=missing .
 
+# Using a custom profile
 $ conan install --deployer-folder=rpm_deploy \
                 --deployer=rpm_deployer \
                 --profile=optToolchain \
@@ -59,6 +63,17 @@ $ conan install --deployer-folder=rpm_deploy \
 $ conan install --deployer-folder=deb_deploy \
                 --deployer=deb_deployer \
                 --profile=optToolchain \
+                .
+
+# Specifying prefix at deployer runtime (using default profile here)
+$ conan install --deployer-folder=rpm_deploy \
+                --deployer=rpm_deployer \
+                --options="*:install_prefix=/opt/toolchain" \
+                .
+
+$ conan install --deployer-folder=deb_deploy \
+                --deployer=deb_deployer \
+                --options="*:install_prefix=/opt/toolchain" \
                 .
 ```
 
