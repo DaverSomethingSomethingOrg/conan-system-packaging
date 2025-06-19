@@ -77,12 +77,12 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
         # strip leading '/' off install_prefix
         neutered_prefix = str(tool_prefix).lstrip("/")
         copy_pattern = f'{ neutered_prefix }/*'
-        copy_dst = os.path.join(output_folder, dashed_rpm_toolnamever)
+        copy_dst = os.path.join(output_folder, dashed_pkg_toolnamever)
     else:
         # strip leading '/' off install_prefix
         neutered_prefix = str(toolchain_prefix).lstrip("/")
         copy_pattern = '*'
-        copy_dst = os.path.join(output_folder, dashed_rpm_toolnamever, neutered_prefix)
+        copy_dst = os.path.join(output_folder, dashed_pkg_toolnamever, neutered_prefix)
 
     copy(conanfile=conanfile,
          src=dependency_item.package_folder,
@@ -95,9 +95,9 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
     subprocess.run(['tar',
                     '--create',
                     '--gzip',
-                    '--file', os.path.join(rpm_HOME, 'rpmbuild', 'SOURCES', f'{ dashed_rpm_toolnamever }.tar.gz'),
+                    '--file', os.path.join(rpm_HOME, 'rpmbuild', 'SOURCES', f'{ dashed_pkg_toolnamever }.tar.gz'),
                     '--directory', output_folder,
-                    os.path.join(dashed_rpm_toolnamever, neutered_prefix)
+                    os.path.join(dashed_pkg_toolnamever, neutered_prefix)
                    ])
 
     # rpm spec template populated with information from conanfile
