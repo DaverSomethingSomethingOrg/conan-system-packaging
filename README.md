@@ -51,10 +51,10 @@ os=Linux
 
 ```bash
 
-# Make sure the full toolchain is built and loaded into our cache.
-$ conan install --build=missing .
-
+######################################################################
 # Using a custom profile
+$ conan install --build=missing --profile=optToolchain .
+
 $ conan install --deployer-folder=rpm_deploy \
                 --deployer=rpm_deployer \
                 --profile=optToolchain \
@@ -65,7 +65,12 @@ $ conan install --deployer-folder=deb_deploy \
                 --profile=optToolchain \
                 .
 
+######################################################################
 # Specifying prefix at deployer runtime (using default profile here)
+$ conan install --build=missing \
+                --options="*:install_prefix=/opt/toolchain" \
+                .
+
 $ conan install --deployer-folder=rpm_deploy \
                 --deployer=rpm_deployer \
                 --options="*:install_prefix=/opt/toolchain" \

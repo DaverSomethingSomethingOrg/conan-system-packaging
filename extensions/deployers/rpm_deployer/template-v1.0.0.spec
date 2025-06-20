@@ -2,7 +2,6 @@ Name:           %{tool_name}
 Version:        %{tool_version}
 Release:        %{build_num}%{?dist}
 Summary:        Summary field must be present in package
-BuildArch:      aarch64
 
 License:        %{tool_license}
 Source0:        %{tool_name}-%{tool_version}.tar.gz
