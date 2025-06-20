@@ -161,7 +161,7 @@ def process_dependency(conanfile, output_folder, dependency_item):
                     + f'\n' \
                     + f'Package: { dashed_pkg_toolname }\n' \
                     + f'Architecture: { dpkg_arch }\n' \
-                    + f'Depends: ${{shlibs:Depends}}, ${{misc:Depends}}{ pkg_dependencies }\n' \
+                    + f'Depends: ${{misc:Depends}}{ pkg_dependencies }\n' \
                     + f'Description: { dependency_item.description }\n'
 
 #TODO Binary-only package?

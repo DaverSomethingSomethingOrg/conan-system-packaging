@@ -1,3 +1,9 @@
 #!/usr/bin/make -f
+
+# We're not going to be responsible for incomplete conan recipes
+# but we really should fix them... we'll see errors logged at least
+override_dh_shlibdeps:
+	dh_shlibdeps -a || /bin/true
+
 %:
 	dh $@
