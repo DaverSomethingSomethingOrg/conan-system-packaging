@@ -159,7 +159,7 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
         '--define', f"tool_summary { dependency_item.description }",
         '--define', f"tool_description { dependency_item.description }",
         '--define', f"tool_license { dependency_item.license }",
-        '--define', f"tool_vendor *",
+        '--define', f"tool_vendor Conan",
         '--define', f"tool_packager conan-system-packaging",
         '--define', f"toolchain_prefix { toolchain_prefix }",
         '--define', f"build_num 1",

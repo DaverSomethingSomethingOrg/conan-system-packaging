@@ -110,7 +110,7 @@ def process_dependency(conanfile, output_folder, dependency_item):
 
 #TODO
     # - build #/package revision or bootstrap versioning needs to be provided or detected somehow
-    # - author/Maintainer/EMAIL
+    # - EMAIL
     # - %changelog ???
 #TODO  ./opt+toolchain-make-4.4.1/debian/copyright
 
@@ -157,7 +157,9 @@ def process_dependency(conanfile, output_folder, dependency_item):
 
     # Generate control file
     control_content = f'Source: { dashed_pkg_toolname }\n' \
-                    + f'Maintainer: Not it\n' \
+                    + f'Maintainer: Conan\n' \
+                    + f'XBS-Vendor: Conan\n' \
+                    + f'XBS-Packager: conan-system-packaging\n' \
                     + f'Section: misc\n' \
                     + f'Priority: optional\n' \
                     + f'Standards-Version: 4.7.0\n' \
