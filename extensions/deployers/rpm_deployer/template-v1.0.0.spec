@@ -1,4 +1,4 @@
-Name:           %{tool_name}
+Name:           %{short_tool_name}
 Version:        %{tool_version}
 Release:        %{build_num}%{?dist}
 Summary:        %{tool_summary}
