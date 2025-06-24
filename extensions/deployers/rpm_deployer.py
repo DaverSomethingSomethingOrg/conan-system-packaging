@@ -154,7 +154,6 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
         'rpmbuild',
         '-bb',
         '--define', f"__brp_mangle_shebangs /bin/true",
-        '--define', f"short_tool_name { dependency_item.ref.name }",
         '--define', f"tool_name { dashed_pkg_toolname }",
         '--define', f"tool_version { dependency_item.ref.version }",
         '--define', f"tool_summary { dependency_item.description }",
