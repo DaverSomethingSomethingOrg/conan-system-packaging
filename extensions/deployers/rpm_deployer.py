@@ -61,16 +61,16 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
     conanfile.output.info(info_msg)
 
     toolchain_prefix = conanfile.options.install_prefix
-    package_prefix = str(toolchain_prefix).lstrip('/').replace('/', '_')
+    package_prefix = str(toolchain_prefix).lstrip('/').replace('/', '-')
 
     # We'll name each of our toolchain packages after ourselves.
     # We are "/opt/toolchain", so "make" gets "opt+toolchain-make" to avoid conflict with OS packages.
     dashed_pkg_toolname = f'{ package_prefix }-{ dependency_item.ref.name }'
     dashed_pkg_toolnamever = f'{ dashed_pkg_toolname }-{ dependency_item.ref.version }'
 
-    # If dependency has a install_prefix, we'll copy the files out of that area
+    # If dependency has an install_prefix, we'll copy the files out of that area.
     # Otherwise we'll assume it's relocatable and use our toplevel prefix as an
-    # install subdirectory and copy to that
+    # install subdirectory and copy to that.
     if 'install_prefix' in dependency_item.options:
         tool_prefix = dependency_item.options.install_prefix
 
@@ -86,7 +86,11 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
 
     copy(conanfile=conanfile,
          src=dependency_item.package_folder,
-         excludes=['conaninfo.txt', 'conanmanifest.txt'],
+         excludes=['conaninfo.txt',
+                   'conanmanifest.txt',
+                   'conan*.sh',
+                   'deactivate_conan*.sh',
+                  ],
          dst=copy_dst,
          pattern=copy_pattern,
         )
@@ -152,8 +156,11 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
         '--define', f"__brp_mangle_shebangs /bin/true",
         '--define', f"tool_name { dashed_pkg_toolname }",
         '--define', f"tool_version { dependency_item.ref.version }",
+        '--define', f"tool_summary { dependency_item.description }",
         '--define', f"tool_description { dependency_item.description }",
         '--define', f"tool_license { dependency_item.license }",
+        '--define', f"tool_vendor '*'",
+        '--define', f"tool_packager conan-system-packaging",
         '--define', f"toolchain_prefix { toolchain_prefix }",
         '--define', f"build_num 1",
     ]

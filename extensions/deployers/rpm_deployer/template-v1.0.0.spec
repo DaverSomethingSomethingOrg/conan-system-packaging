@@ -1,13 +1,13 @@
 Name:           %{tool_name}
 Version:        %{tool_version}
 Release:        %{build_num}%{?dist}
-Summary:        Summary field must be present in package
+Summary:        %{tool_summary}
 
 License:        %{tool_license}
 Source0:        %{tool_name}-%{tool_version}.tar.gz
 
-#Vendor:
-#Packager:
+Vendor: %{tool_vendor}
+Packager: %{tool_packager}
 
 # We do NOT want automatic dependency detection
 AutoReqProv:    no

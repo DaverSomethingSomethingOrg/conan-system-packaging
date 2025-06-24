@@ -74,7 +74,11 @@ def process_dependency(conanfile, output_folder, dependency_item):
     # Copy the package content out of the Conan cache
     copy(conanfile=conanfile,
          src=dependency_item.package_folder,
-         excludes=['conaninfo.txt', 'conanmanifest.txt'],
+         excludes=['conaninfo.txt',
+                   'conanmanifest.txt',
+                   'conan*.sh',
+                   'deactivate_conan*.sh',
+                  ],
          dst=pkg_dst,
          pattern=copy_pattern,
         )
