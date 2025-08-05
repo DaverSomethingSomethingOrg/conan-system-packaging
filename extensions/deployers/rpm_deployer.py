@@ -20,7 +20,7 @@
 # See project `README.md` for more installation and usage details.
 #
 
-from conan.tools.files import copy, mkdir
+from conan.tools.files import copy, mkdir, rename, rm
 #from conan.errors import ConanException
 import os
 import subprocess
@@ -77,12 +77,12 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
         # strip leading '/' off install_prefix
         neutered_prefix = str(tool_prefix).lstrip("/")
         copy_pattern = f'{ neutered_prefix }/*'
-        copy_dst = os.path.join(output_folder, dashed_pkg_toolnamever)
+        pkg_dst = os.path.join(output_folder, dashed_pkg_toolnamever)
     else:
         # strip leading '/' off install_prefix
         neutered_prefix = str(toolchain_prefix).lstrip("/")
         copy_pattern = '*'
-        copy_dst = os.path.join(output_folder, dashed_pkg_toolnamever, neutered_prefix)
+        pkg_dst = os.path.join(output_folder, dashed_pkg_toolnamever, neutered_prefix)
 
     copy(conanfile=conanfile,
          src=dependency_item.package_folder,
@@ -91,9 +91,28 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
                    'conan*.sh',
                    'deactivate_conan*.sh',
                   ],
-         dst=copy_dst,
+         dst=pkg_dst,
          pattern=copy_pattern,
         )
+
+    # CONFLICT Avoid - Move typically reused license file paths to package-specific paths
+    for license_file in ['COPYING', 'LICENSE', 'LICENSES', 'COPYING.LESSER', 'COPYING.LESSERv3', 'COPYINGv2',]:
+        if os.path.exists(os.path.join(pkg_dst, 'licenses', license_file)):
+            mkdir(conanfile=conanfile,
+                  path=os.path.join(pkg_dst, 'licenses', dependency_item.ref.name),
+            )
+            rm(conanfile=conanfile,
+               folder=os.path.join(pkg_dst, 'licenses', dependency_item.ref.name),
+               pattern=os.path.join(license_file),
+            )
+            rename(conanfile=conanfile,
+                   src=os.path.join(pkg_dst, 'licenses', license_file),
+                   dst=os.path.join(pkg_dst, 'licenses', dependency_item.ref.name, license_file),
+            )
+            rm(conanfile=conanfile,
+               folder=os.path.join(pkg_dst, 'licenses'),
+               pattern=os.path.join(license_file),
+            )
 
     # tar up the deployment copy to use as rpmbuild sources
     subprocess.run(['tar',

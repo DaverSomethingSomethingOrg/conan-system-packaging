@@ -31,3 +31,4 @@ cp -pR * $RPM_BUILD_ROOT
 
 %files
 %{toolchain_prefix}
+%exclude %{toolchain_prefix}/share/info/dir

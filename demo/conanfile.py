@@ -13,9 +13,12 @@ class Toolchain(ConanFile):
 
     def requirements(self):
 
+        self.requires("cmake/4.0.1")
         self.requires("make/4.4.1")
-        self.requires("binutils/2.44")
-        self.requires("gcc/15.1.0")
+        self.requires("binutils/2.42")
+#        return
+        self.requires("gcc/12.2.0")
+        return
 
 #        self.requires("autoconf/2.71")
 
@@ -25,7 +28,6 @@ class Toolchain(ConanFile):
 #        self.requires("cppunit/1.15.1")
 #        self.requires("valgrind/")
 
-        self.requires("cmake/4.0.1")
 #        self.requires("meson/1.7.2")
 #        self.requires("ninja/1.12.1")
 #        self.requires("bazel/7.2.1")

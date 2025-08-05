@@ -8,7 +8,7 @@
 # dependencies are included.
 #
 
-from conan.tools.files import copy, mkdir
+from conan.tools.files import copy, mkdir, rename, rm
 #from conan.errors import ConanException
 import os
 import subprocess
@@ -82,6 +82,25 @@ def process_dependency(conanfile, output_folder, dependency_item):
          dst=pkg_dst,
          pattern=copy_pattern,
         )
+
+    # CONFLICT Avoid - Move typically reused license file paths to package-specific paths
+    for license_file in ['COPYING', 'LICENSE', 'LICENSES', 'COPYING.LESSER', 'COPYING.LESSERv3', 'COPYINGv2',]:
+        if os.path.exists(os.path.join(pkg_dst, 'licenses', license_file)):
+            mkdir(conanfile=conanfile,
+                  path=os.path.join(pkg_dst, 'licenses', dependency_item.ref.name),
+            )
+            rm(conanfile=conanfile,
+               folder=os.path.join(pkg_dst, 'licenses', dependency_item.ref.name),
+               pattern=os.path.join(license_file),
+            )
+            rename(conanfile=conanfile,
+                   src=os.path.join(pkg_dst, 'licenses', license_file),
+                   dst=os.path.join(pkg_dst, 'licenses', dependency_item.ref.name, license_file),
+            )
+            rm(conanfile=conanfile,
+               folder=os.path.join(pkg_dst, 'licenses'),
+               pattern=os.path.join(license_file),
+            )
 
     # Copy the template content from the deployer installation
     copy(conanfile=conanfile,
