@@ -4,6 +4,8 @@ from conan.tools.layout import basic_layout
 class Toolchain(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
 
+    author = "dla"
+
     options = {
         "install_prefix": [None, "ANY"],
     }
@@ -13,8 +15,9 @@ class Toolchain(ConanFile):
 
     def requirements(self):
 
-        self.requires("cmake/4.0.1")
         self.requires("make/4.4.1")
+        return
+        self.requires("cmake/4.0.1")
         self.requires("binutils/2.42")
 #        return
         self.requires("gcc/12.2.0")

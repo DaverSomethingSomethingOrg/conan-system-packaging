@@ -1,9 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json.
 {
-  "name": "Base OS with Python3 and Git",
-//  "build": { "dockerfile": "Dockerfile-python" },
-  "build": { "dockerfile": "Dockerfile-ubuntu" },
-//  "build": { "dockerfile": "Dockerfile-almalinux" },
+  "name": "Maxed-out base image",
+  "image": "nexus.homelab/conan-docker-build-ubuntu:aarch64-latest",
 
 // feature support is for ubuntu/debian (uses apt-get, etc) apparently...
 /*

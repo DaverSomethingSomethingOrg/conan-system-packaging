@@ -1,2 +1,6 @@
 # Vim tmp files
 *.swp
+
+demo/build-release
+demo/deb_deploy
+demo/rpm_deploy

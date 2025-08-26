@@ -24,6 +24,7 @@ from conan.tools.files import copy, mkdir, rename, rm
 #from conan.errors import ConanException
 import os
 import subprocess
+import email.utils
 
 def deploy(graph, output_folder, **kwargs):
 
@@ -60,8 +61,16 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
 
     conanfile.output.info(info_msg)
 
-    toolchain_prefix = conanfile.options.install_prefix
-    package_prefix = str(toolchain_prefix).lstrip('/').replace('/', '-')
+    # Gather up toplevel metadata for all dependencies if not provided.
+    toolchain_metadata = {'install_prefix': conanfile.options.install_prefix,
+                          'author': conanfile.author,
+                         }
+    toolchain_metadata['email'] = email.utils.parseaddr(conanfile.author)[0] or None
+
+#TODO throw exception and error out on undefined email
+#    if toolchain_metadata['email'] is None:
+
+    package_prefix = str(toolchain_metadata['install_prefix']).lstrip('/').replace('/', '-')
 
     # We'll name each of our toolchain packages after ourselves.
     # We are "/opt/toolchain", so "make" gets "opt+toolchain-make" to avoid conflict with OS packages.
@@ -80,9 +89,15 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
         pkg_dst = os.path.join(output_folder, dashed_pkg_toolnamever)
     else:
         # strip leading '/' off install_prefix
-        neutered_prefix = str(toolchain_prefix).lstrip("/")
+        neutered_prefix = str(toolchain_metadata['install_prefix']).lstrip("/")
         copy_pattern = '*'
         pkg_dst = os.path.join(output_folder, dashed_pkg_toolnamever, neutered_prefix)
+
+    package_maintainer = "conan"
+    if dependency_item._conanfile.author:
+        package_maintainer = dependency_item._conanfile.author
+    elif toolchain_metadata['author']:
+        package_maintainer = toolchain_metadata['author']
 
     copy(conanfile=conanfile,
          src=dependency_item.package_folder,
@@ -178,9 +193,9 @@ def process_dependency(conanfile, output_folder, rpm_HOME, dependency_item):
         '--define', f"tool_summary { dependency_item.description }",
         '--define', f"tool_description { dependency_item.description }",
         '--define', f"tool_license { dependency_item.license }",
-        '--define', f"tool_vendor Conan",
+        '--define', f"tool_vendor { package_maintainer }",
         '--define', f"tool_packager conan-system-packaging",
-        '--define', f"toolchain_prefix { toolchain_prefix }",
+        '--define', f"toolchain_prefix { toolchain_metadata['install_prefix'] }",
         '--define', f"build_num 1",
     ]
 
